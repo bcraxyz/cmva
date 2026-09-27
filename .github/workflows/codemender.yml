@@ -126,7 +126,7 @@ jobs:
         if: always()
         run: |
           cm report -f json > "$RUNNER_TEMP/codemender-report.json" || true
-          cm report -f sarif --output "$RUNNER_TEMP/codemender.sarif" || true
+          cm report -f sarif > "$RUNNER_TEMP/codemender.sarif" || true
           cm report -f md >> "$GITHUB_STEP_SUMMARY" || true
 
       - name: Upload CodeMender JSON report
