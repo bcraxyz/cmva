@@ -17,13 +17,13 @@ env:
   CM_DL_REPO: codemender-cli-production
   CM_DL_VERSION: stable
   CM_ASSET_ZIP: cm-linux-amd64.zip
-  CM_PROJECT: ${{ secrets.CM_PROJECT }}
   PER_VERIFY_TIMEOUT: "900"
   PER_FIX_TIMEOUT: "900"
 
 permissions:
   contents: write
   pull-requests: write
+  id-token: write
 
 jobs:
   codemender:
@@ -86,16 +86,11 @@ jobs:
           if-no-files-found: warn
  
       - name: Authenticate to Google Cloud
-        env:
-          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
-        run: |
-          set -euo pipefail
-          KEY="$RUNNER_TEMP/gcp-sa.json"
-          printf '%s' "$GCP_SA_KEY" > "$KEY"
-          gcloud auth activate-service-account --key-file="$KEY" --quiet
-          gcloud config set project "$CM_PROJECT" --quiet
-          echo "GOOGLE_APPLICATION_CREDENTIALS=$KEY" >> "$GITHUB_ENV"
-          echo "GOOGLE_CLOUD_PROJECT=$CM_PROJECT" >> "$GITHUB_ENV"
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ secrets.GCP_PROJECT }}
+          workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_SA_EMAIL }}
 
       - name: Install CodeMender CLI (cm)
         run: |
