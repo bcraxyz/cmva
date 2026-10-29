@@ -199,7 +199,7 @@ jobs:
           set -uo pipefail
           FID="${{ steps.select.outputs.finding_id }}"
           cm session list 2>/dev/null | awk '/RUNNING/{print $1}' | while read -r s; do [ -n "$s" ] && cm session cancel "$s" >/dev/null 2>&1 || true; done || true
-          ( cd "$SCAN_PATH" && timeout "$PER_VERIFY_TIMEOUT" cm verify "$FID" -y --unrestricted --bypass-warning ) \
+          ( cd "$SCAN_PATH" && timeout "$PER_VERIFY_TIMEOUT" cm verify "$FID" -y --bypass-warning ) \
             2>&1 | tee "$RUNNER_TEMP/verify.log"
           if grep -q "DISMISSED" "$RUNNER_TEMP/verify.log"; then
             echo "dismissed=true" >> "$GITHUB_OUTPUT"
