@@ -214,7 +214,7 @@ jobs:
           set -uo pipefail
           FID="${{ steps.select.outputs.finding_id }}"
           cm session list 2>/dev/null | awk '/RUNNING/{print $1}' | while read -r s; do [ -n "$s" ] && cm session cancel "$s" >/dev/null 2>&1 || true; done || true
-          ( cd "$SCAN_PATH" && timeout "$PER_FIX_TIMEOUT" cm fix "$FID" -y --unrestricted --bypass-warning ) \
+          ( cd "$SCAN_PATH" && timeout "$PER_FIX_TIMEOUT" cm fix "$FID" -y --bypass-warning ) \
             2>&1 | tee "$RUNNER_TEMP/fix.log"
           cm report "$FID" -f md > "$RUNNER_TEMP/cm-fix-report.md" || true
 
