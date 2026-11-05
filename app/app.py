@@ -67,7 +67,7 @@ def get_user():
     username = request.args.get("username")
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
-    cursor.execute(f"SELECT * FROM users WHERE username = '{username}'")
+    cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
     user = cursor.fetchone()
     conn.close()
     return jsonify(user) if user else ("Not found", 404)
